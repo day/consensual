@@ -1,0 +1,30 @@
+<head>
+  <title>consensu.al coming soon</title>
+</head>
+ 
+<body>
+  <div class="container">
+    <header>
+      <h1>Simple Tasks</h1>
+      <form class="new-task">
+        <input type="text" name="text" placeholder="What do you need to do?" />
+      </form>
+    </header>
+ 
+    <ul>
+      {{#each tasks}}
+        {{> task}}
+      {{/each}}
+    </ul>
+
+  </div>
+</body>
+ 
+<template name="task">
+  <li class="{{#if checked}}checked{{/if}}">
+    <button class="delete">&times;</button>
+    <form class="new-task">
+      <input type="checkbox" checked="{{checked}}" class="toggle-checked" />{{> editableText collection="tasks" field="text" class="text"}}
+    </form>
+  </li>
+</template>
