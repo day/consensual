@@ -17,10 +17,16 @@ body {
   font-size: 14px;
 }
 
+input.wide-text-edit {
+  padding-left: 10px;
+  font-family: courier;
+}
+
 .container {
   max-width: 600px;
   margin: 0 auto;
   min-height: 100%;
+  width: 100%;
   background: white;
 }
 
@@ -54,12 +60,24 @@ form {
   padding: 10px 0;
   background: transparent;
   border: none;
-  width: 100%;
   padding-right: 80px;
   font-size: 1em;
+  width: 100%;
+  font-family: courier;
 }
 
 .new-task input:focus{
+  outline: 0;
+}
+
+.edit-task input {
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  font-size: 1em;
+}
+
+.edit-task input:focus{
   outline: 0;
 }
 
@@ -74,8 +92,12 @@ ul {
   font-weight: bold;
   background: none;
   font-size: 1em;
-  border: none;
+  height: 20px;
   position: relative;
+  top: -5px;
+  cursor: pointer;
+  padding-bottom: 5px;
+  border: none;
 }
 
 li {
@@ -87,6 +109,16 @@ li {
 
 li .text {
   margin-left: 10px;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+li .editable-text {
+  margin-left: 10px;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
 }
 
 li.checked {

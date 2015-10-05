@@ -22,9 +22,10 @@
  
 <template name="task">
   <li class="{{#if checked}}checked{{/if}}">
-    <button class="delete">&times;</button>
-    <form class="new-task">
-      <input type="checkbox" checked="{{checked}}" class="toggle-checked" />{{> editableText collection="tasks" field="text" class="text"}}
+    <form class="edit-task">
+      <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
+      <div style="display: inline-block;width:90%;" class="editable-text-trigger">{{> editableText collection="tasks" field="text" acceptEmpty=true placeholder="Has something changed?" eventType="dblclick" class="text"}}</div>
+      <button class="delete">&times;</button>
     </form>
   </li>
 </template>
