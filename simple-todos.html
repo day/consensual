@@ -9,6 +9,9 @@
       <form class="new-task">
         <input type="text" name="text" placeholder="What should we do next?" />
       </form>
+      {{#each settings}}
+        {{> setting}}
+      {{/each}}
     </header>
  
     <ul>
@@ -29,3 +32,8 @@
     </form>
   </li>
 </template>
+
+<template name="setting">
+  <button class="reorder-tasks">{{#if order_ascending}}&DownArrow;{{else}}&UpArrow;{{/if}}</button>
+</template>
+

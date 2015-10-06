@@ -1,11 +1,22 @@
 Tasks = new Mongo.Collection("tasks");
- 
+Settings = new Mongo.Collection("settings");
+
 if (Meteor.isClient) {
   // This code only runs on the client
+
+  Meteor.startup(function() {
+    // Session stuff could go in here
+    // Session.set("name_of_some_session_var", value_of_some_session_var);
+  });
+  
   Template.body.helpers({
+    settings: function () {
+      return Settings.find({});
+    },
     tasks: function () {
-      // Show newest tasks at the top
-      return Tasks.find({}, {sort: {createdAt: -1}});
+      var order_default = "ascending";
+      var order_ascending = (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+      return Tasks.find({}, {sort: {createdAt: order_ascending ? 1 : -1}});
     },
     header: function () {
       return document.domain;
@@ -42,4 +53,11 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.setting.events({
+    "click .reorder-tasks": function () {
+      Settings.update(this._id, {
+        $set: {order_ascending: ! this.order_ascending}
+      });
+    }
+  });
 }
