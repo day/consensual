@@ -6,6 +6,9 @@ if (Meteor.isClient) {
     tasks: function () {
       // Show newest tasks at the top
       return Tasks.find({}, {sort: {createdAt: -1}});
+    },
+    header: function () {
+      return document.domain;
     }
   });
 
