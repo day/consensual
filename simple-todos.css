@@ -17,7 +17,7 @@ body {
   font-size: 14px;
 }
 
-input.wide-text-edit {
+input.wide-text-edit, span.not_editable {
   padding-left: 10px;
   font-family: courier;
 }
@@ -147,7 +147,7 @@ li.checked {
   color: #888;
 }
 
-li.checked .text {
+li.checked .not_editable {
   text-decoration: line-through;
 }
 
