@@ -116,26 +116,32 @@ ul {
   outline: 0;
 }
 
-li {
+li.task_block {
   position: relative;
   list-style: none;
   padding: 10px;
   border-bottom: #eee solid 1px;
 }
 
-li .text {
+li.task_block .text {
   margin-left: 10px;
   display: inline-block;
   width: 100%;
   height: 100%;
 }
 
-li .editable-text {
+li.task_block .editable-text {
   margin-left: 10px;
   display: inline-block;
   width: 100%;
   height: 100%;
 }
+
+li.selected, li:focus {
+  background: rgba(157, 175, 204, 0.32);
+  outline: 0;
+}
+
 
 li.checked {
   color: #888;

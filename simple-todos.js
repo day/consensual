@@ -72,6 +72,48 @@ if (Meteor.isClient) {
   });
 
   Template.task.events({
+    "focus .task_block": function () {
+      // First, none other should be selected
+      if (Session.get("last_selected")) {
+        Tasks.update(
+          Session.get("last_selected"),
+          { $set: {selected: false} },
+          { multi: true }
+        );
+      }
+      // Then, highlight the selected task
+      Tasks.update(this._id, {
+        $set: {selected: true}
+      });
+      Session.set("last_selected", this._id);
+    },
+    "blur .task_block": function () {
+      // Un-highlight the selected task
+      Tasks.update(this._id, {
+        $set: {selected: false}
+      });
+    },
+    "focus .wide_text_edit": function () {
+      // First, none other should be selected
+      if (Session.get("last_selected")) {
+        Tasks.update(
+          Session.get("last_selected"),
+          { $set: {selected: false} },
+          { multi: true }
+        );
+      }
+      // Then, highlight the selected task
+      Tasks.update(this._id, {
+        $set: {selected: true}
+      });
+      Session.set("last_selected", this._id);
+    },
+    "blur .wide_text_edit": function () {
+      // Un-highlight the selected task
+      Tasks.update(this._id, {
+        $set: {selected: false}
+      });
+    },
     "click .toggle-checked": function () {
       // Set the checked property to the opposite of its current value
       Tasks.update(this._id, {
