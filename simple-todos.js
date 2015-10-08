@@ -1,12 +1,31 @@
+// Mongo collections we'll be working with
 Tasks = new Mongo.Collection("tasks");
 Settings = new Mongo.Collection("settings");
+
+// Place to stash stuff for my app that I don't want to be global
+Consensual = new Object(null);
+
+// Function to extract the hostname from a URL
+Consensual.extractDomain = function (url) {
+    var domain;
+    // We don't want the protocol
+    if (url.indexOf("://") > -1) {
+        domain = url.split('/')[2];
+    }
+    else {
+        domain = url.split('/')[0];
+    }
+    // We also don't want the port number
+    domain = domain.split(':')[0];
+    return domain;
+}
+
 
 if (Meteor.isClient) {
   // This code only runs on the client
 
   Meteor.startup(function() {
-    // Session stuff could go in here
-    // Session.set("name_of_some_session_var", value_of_some_session_var);
+    Session.setDefault("domain", Consensual.extractDomain(document.referrer));
   });
   
   Template.body.helpers({
@@ -19,7 +38,7 @@ if (Meteor.isClient) {
       return Tasks.find({}, {sort: {createdAt: order_ascending ? 1 : -1}});
     },
     header: function () {
-      return document.domain;
+      return Session.get("domain");
     }
   });
 
@@ -49,6 +68,7 @@ if (Meteor.isClient) {
       });
     },
     "click .delete": function () {
+      event.preventDefault();
       Tasks.remove(this._id);
     }
   });
