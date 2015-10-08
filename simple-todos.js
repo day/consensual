@@ -38,7 +38,18 @@ if (Meteor.isClient) {
       return Tasks.find({}, {sort: {createdAt: order_ascending ? 1 : -1}});
     },
     header: function () {
-      return Session.get("domain");
+      var domain = Session.get("domain");
+      var phrase = "work in progress";
+      var header = phrase;
+      switch (domain) {
+        case "consensu.al":
+          header = domain + "  " + phrase;
+          break;
+        case "consensual.ly":
+          header = phrase + "... " + domain;
+          break;
+      }
+      return header;
     }
   });
 
