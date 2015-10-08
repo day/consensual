@@ -27,7 +27,7 @@
   <li class="{{#if checked}}checked{{/if}}">
     <form class="edit-task">
       <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
-      <div style="display: inline-block;width:90%;" class="editable-text-trigger">{{> editableText collection="tasks" field="text" acceptEmpty=true placeholder="Has something changed?" eventType="dblclick" class="text"}}</div>
+      <div style="display: inline-block;width:90%;" class="editable-text-trigger">{{> editableText collection="tasks" field="text" acceptEmpty=true placeholder="Has something changed?" eventType="click" class="text"}}</div>
       <button class="delete">&times;</button>
     </form>
   </li>
