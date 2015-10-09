@@ -119,10 +119,6 @@ if (Meteor.isClient) {
       Tasks.update(this._id, {
         $set: {checked: ! this.checked}
       });
-      // Selected is inverse of checked
-      Tasks.update(this._id, {
-        $set: {selected: this.checked}
-      });
     },
     "click .delete": function () {
       event.preventDefault();
