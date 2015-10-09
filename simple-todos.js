@@ -93,26 +93,13 @@ if (Meteor.isClient) {
         $set: {selected: false}
       });
     },
-    "focus .wide_text_edit": function () {
-      // First, none other should be selected
-      if (Session.get("last_selected")) {
-        Tasks.update(
-          Session.get("last_selected"),
-          { $set: {selected: false} },
-          { multi: true }
-        );
-      }
-      // Then, highlight the selected task
-      Tasks.update(this._id, {
-        $set: {selected: true}
-      });
-      Session.set("last_selected", this._id);
-    },
-    "blur .wide_text_edit": function () {
-      // Un-highlight the selected task
-      Tasks.update(this._id, {
-        $set: {selected: false}
-      });
+    "focus .wide-text-edit": function () {
+      // Deselect the text and position the caret at the end
+      // TODO: Figure out how to position it based on where I clicked
+      var text_input = event.target;
+      setTimeout(function() {
+        text_input.selectionStart = text_input.selectionEnd;
+      }, 0);
     },
     "click .toggle-checked": function () {
       // Set the checked property to the opposite of its current value
