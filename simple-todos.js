@@ -38,6 +38,17 @@ if (Meteor.isClient) {
       var hide_completed_toggle = Session.get("hideCompleted") ? {checked: {$ne: true}} : {};
       return Tasks.find(hide_completed_toggle, {sort: {createdAt: order_ascending ? 1 : -1}});
     },
+    domain: function () {
+      var domain = Session.get("domain");
+      switch (domain) {
+        case "consensu.al":
+          return domain;
+        case "consensual.ly":
+          return domain;
+        default:
+          return false;
+      }
+    },
     header: function () {
       var domain = Session.get("domain");
       var phrase = "work in progress";
