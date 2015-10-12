@@ -6,6 +6,9 @@
   <div class="container">
     <header>
       <h1>{{header}}</h1>
+      <label class="hide-completed">
+        {{incompleteCount}} Tasks in Queue<br />Hide {{completeCount}} Completed <input type="checkbox" checked="{{hideCompleted}}" />
+      </label>
       <form class="new-task">
         <input type="text" name="text" placeholder="What should we do next?" />
       </form>

@@ -17,6 +17,20 @@ body {
   font-size: 14px;
 }
 
+.hide-completed {
+  float: right;
+  position: relative;
+  top: 5px;
+  left: 5px;
+  color: #999999;
+  font-size: 0.75em;
+  cursor: pointer;
+}
+
+.hide-completed input:focus{
+  outline: 0;
+}
+
 input.wide-text-edit, span.not_editable {
   padding-left: 10px;
   font-family: courier;

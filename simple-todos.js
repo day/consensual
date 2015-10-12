@@ -35,7 +35,8 @@ if (Meteor.isClient) {
     tasks: function () {
       var order_default = "ascending";
       var order_ascending = (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
-      return Tasks.find({}, {sort: {createdAt: order_ascending ? 1 : -1}});
+      var hide_completed_toggle = Session.get("hideCompleted") ? {checked: {$ne: true}} : {};
+      return Tasks.find(hide_completed_toggle, {sort: {createdAt: order_ascending ? 1 : -1}});
     },
     header: function () {
       var domain = Session.get("domain");
@@ -50,6 +51,15 @@ if (Meteor.isClient) {
           break;
       }
       return header;
+    },
+    hideCompleted: function () {
+      return Session.get("hideCompleted");
+    },
+    completeCount: function () {
+      return Tasks.find({checked: true}).count(); // We can't use 'checked: {$eq: true}' until Mongo 3.0 (currently on 2.6.7)
+    },
+    incompleteCount: function () {
+      return Tasks.find({checked: {$ne: true}}).count(); // Oddly, 'checked: false' doesn't seem to work
     }
   });
 
@@ -68,6 +78,9 @@ if (Meteor.isClient) {
  
       // Clear form
       event.target.text.value = "";
+    },
+    "click .hide-completed input": function (event) {
+      Session.set("hideCompleted", event.target.checked);
     }
   });
 
@@ -108,6 +121,7 @@ if (Meteor.isClient) {
       });
     },
     "click .delete": function () {
+      // Do not submit the form when deleting a task
       event.preventDefault();
       Tasks.remove(this._id);
     }
