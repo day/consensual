@@ -26,6 +26,7 @@ if (Meteor.isClient) {
 
   Meteor.startup(function() {
     Session.setDefault("domain", Consensual.extractDomain(document.referrer));
+    Session.set("task_selected", false);
   });
   
   Template.body.helpers({
@@ -95,27 +96,20 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.task.helpers({
+    selected: function() {
+      return this._id === Session.get("task_selected");
+    }
+  });
+
   Template.task.events({
     "focus .task_block": function () {
-      // First, none other should be selected
-      if (Session.get("last_selected")) {
-        Tasks.update(
-          Session.get("last_selected"),
-          { $set: {selected: false} },
-          { multi: true }
-        );
-      }
-      // Then, highlight the selected task
-      Tasks.update(this._id, {
-        $set: {selected: true}
-      });
-      Session.set("last_selected", this._id);
+      // Highlight the selected task
+      Session.set("task_selected", this._id);
     },
     "blur .task_block": function () {
       // Un-highlight the selected task
-      Tasks.update(this._id, {
-        $set: {selected: false}
-      });
+      Session.set("task_selected", false);
     },
     "focus .wide-text-edit": function () {
       // Deselect the text and position the caret at the end
