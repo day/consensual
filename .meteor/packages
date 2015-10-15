@@ -8,3 +8,4 @@ meteor-platform
 autopublish
 insecure
 babrahams:editable-text
+day:sortable

@@ -27,16 +27,16 @@
     </header>
  
     <ul>
-      {{#each tasks}}
+      {{#sortable items=tasks sortField="order"}}
         {{> task}}
-      {{/each}}
+      {{/sortable}}
     </ul>
 
   </div>
 </body>
  
 <template name="task">
-  <li tabindex = "1" class="task_block{{#if checked}} checked{{else}} editable-text-trigger{{/if}}{{#if selected}} selected{{/if}}">
+  <li tabindex = "{{order}}" class="task_block{{#if checked}} checked{{else}} editable-text-trigger{{/if}}{{#if selected}} selected{{/if}}">
     <form class="edit-task">
       <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
       <div style="display: inline-block;width:90%;">

@@ -3,10 +3,8 @@ Tasks = new Mongo.Collection("tasks");
 Settings = new Mongo.Collection("settings");
 
 // Place to stash stuff for my app that I don't want to be global
-Consensual = new Object(null);
-
-// Function to extract the hostname from a URL
-Consensual.extractDomain = function (url) {
+Consensual  = {
+  extractDomain: function (url) {
     var domain;
     // We don't want the protocol
     if (url.indexOf("://") > -1) {
@@ -18,8 +16,17 @@ Consensual.extractDomain = function (url) {
     // We also don't want the port number
     domain = domain.split(':')[0];
     return domain;
-}
+  },
+  orderAscending: function(order_default) {
+    var order_default = order_default || "ascending";
+    return (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+  }
+};
 
+if (Meteor.isServer) {
+  // Make it so we can drag and drop tasks to reorder
+  Sortable.collections = ["tasks"];
+}
 
 if (Meteor.isClient) {
   // This code only runs on the client
@@ -34,10 +41,10 @@ if (Meteor.isClient) {
       return Settings.find({});
     },
     tasks: function () {
-      var order_default = "ascending";
-      var order_ascending = (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+      
       var hide_completed_toggle = Session.get("hideCompleted") ? {checked: {$ne: true}} : {};
-      return Tasks.find(hide_completed_toggle, {sort: {createdAt: order_ascending ? 1 : -1}});
+      return Tasks.find(hide_completed_toggle, {sort: {order: Consensual.orderAscending() ? 1 : -1}});
+ 
     },
     domain: function () {
       var domain = Session.get("domain");
@@ -82,10 +89,14 @@ if (Meteor.isClient) {
  
       // Get value from form element
       var text = event.target.text.value;
+      var next = Tasks.find({}).count() + 1;
       // Insert a task into the collection
       Tasks.insert({
         text: text,
-        createdAt: new Date() // current time
+        createdAt: new Date(), // current time
+        order: next,
+        checked: false,
+        selected: false
       });
  
       // Clear form
