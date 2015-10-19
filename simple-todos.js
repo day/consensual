@@ -17,13 +17,14 @@ Consensual  = {
     domain = domain.split(':')[0];
     return domain;
   },
-  orderAscending: function(order_default) {
+  orderAscending: function (order_default) {
     var order_default = order_default || "ascending";
     return (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
   }
 };
 
 if (Meteor.isServer) {
+
   // Make it so we can drag and drop tasks to reorder
   Sortable.collections = ["tasks"];
 }
@@ -43,8 +44,12 @@ if (Meteor.isClient) {
     tasks: function () {
       
       var hide_completed_toggle = Session.get("hideCompleted") ? {checked: {$ne: true}} : {};
+
+      // Eventually, this will be accessible only through an TS/admin interface...for now, merely obfuscated
+      // Utilities.taskOrderRepair();
+
       return Tasks.find(hide_completed_toggle, {sort: {order: Consensual.orderAscending() ? 1 : -1}});
- 
+
     },
     domain: function () {
       var domain = Session.get("domain");
@@ -139,6 +144,7 @@ if (Meteor.isClient) {
     "click .delete": function () {
       // Do not submit the form when deleting a task
       event.preventDefault();
+      var ids = _.pluck(Tasks.find({order: {$gt: this.order}}).fetch(), '_id');
       Tasks.remove(this._id);
     }
   });
