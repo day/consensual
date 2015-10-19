@@ -145,6 +145,8 @@ if (Meteor.isClient) {
       // Do not submit the form when deleting a task
       event.preventDefault();
       var ids = _.pluck(Tasks.find({order: {$gt: this.order}}).fetch(), '_id');
+      // This coupling rubs me the wrong way. Can this be done by setting something in Sortable?
+      Meteor.call('rubaxa:sortable/collection-update', "tasks", ids, "order", -1);
       Tasks.remove(this._id);
     }
   });
