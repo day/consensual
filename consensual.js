@@ -20,6 +20,10 @@ Consensual  = {
   orderAscending: function (order_default) {
     var order_default = order_default || "ascending";
     return (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+  },
+  currentUser: function () {
+
+    return Meteor.user() && Meteor.user().username || "";
   }
 };
 
@@ -27,6 +31,7 @@ if (Meteor.isServer) {
 
   // Make it so we can drag and drop tasks to reorder
   Sortable.collections = ["tasks"];
+
 }
 
 if (Meteor.isClient) {
@@ -96,9 +101,13 @@ if (Meteor.isClient) {
       var text = event.target.text.value;
       var next = Tasks.find({}).count() + 1;
       // Insert a task into the collection
+      var user_id = Meteor.userId();
+      var user_name = Meteor.user().username;
       Tasks.insert({
         text: text,
         createdAt: new Date(), // current time
+        owner: user_id,        // _id of logged in user
+        username: user_name,   // username of logged in user
         order: next,
         checked: false,
         selected: false
@@ -115,6 +124,9 @@ if (Meteor.isClient) {
   Template.task.helpers({
     selected: function() {
       return this._id === Session.get("task_selected");
+    },
+    editable: function() {
+      return ((Consensual.currentUser() === this.username) && !this.checked);
     }
   });
 
@@ -158,4 +170,9 @@ if (Meteor.isClient) {
       });
     }
   });
+
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_AND_EMAIL"
+  });
+
 }

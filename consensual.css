@@ -17,6 +17,18 @@ body {
   font-size: 14px;
 }
 
+.accounts-dialog {
+  font-size: 1em;
+}
+
+.login_container {
+  width: 100%;
+  display: inline-block;
+}
+.login {
+  float: right;
+}
+
 .hide-completed {
   float: right;
   position: relative;

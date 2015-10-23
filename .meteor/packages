@@ -9,3 +9,6 @@ autopublish
 insecure
 babrahams:editable-text
 day:sortable
+accounts-password
+day:accounts-ui-unstyled
+day:accounts-ui

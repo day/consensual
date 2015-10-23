@@ -14,12 +14,13 @@
   </div>
   <div class="container">
     <header>
+        <div class="login_container"><span class="login">{{> loginButtons}}</span></div>
       <h1>{{header}}</h1>
       <label class="hide-completed">
         {{incompleteCount}} Tasks in Queue<br />Hide {{completeCount}} Completed <input type="checkbox" checked="{{hideCompleted}}" />
       </label>
       <form class="new-task">
-        <input type="text" name="text" placeholder="What should we do next?" />
+        <input type="text" name="text" placeholder="{{#if currentUser}}What should we do next?{{else}}Sign in to get started!{{/if}}" />
       </form>
       {{#each settings}}
         {{> setting}}
@@ -40,10 +41,10 @@
     <form class="edit-task">
       <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
       <div style="display: inline-block;width:90%;">
-        {{#if checked}}
-          <span class="not_editable">{{text}}</span>
-        {{else}}
+        {{#if editable}}
           {{> editableText collection="tasks" field="text" acceptEmpty=true placeholder="Has something changed?" eventType="click" class="text"}}
+        {{else}}
+          <span class="not_editable"><strong>{{username}}</strong> - {{text}}</span>
         {{/if}}
       </div>
       <button class="delete">&times;</button>
