@@ -32,6 +32,20 @@ if (Meteor.isServer) {
   // Make it so we can drag and drop tasks to reorder
   Sortable.collections = ["tasks"];
 
+  // Customize the password reset email
+  Accounts.emailTemplates.siteName = "Consensu.al";
+  Accounts.emailTemplates.from = "Consensu.al Admin <day.waterbury@gmail.com>";
+  Accounts.emailTemplates.resetPassword.subject = function (user) {
+    return "Password Reset for " + Accounts.emailTemplates.siteName;
+  };
+  Accounts.emailTemplates.resetPassword.text = function (user, url) {
+    var greeting = (user.profile && user.profile.name) ? ("Greetings " + user.profile.name + "!") : "Greetings!";
+    return greeting + "\n\n"
+    + "To reset your password, simply click the link below:\n\n"
+    + url + "\n\n"
+    + "If you do not wish to reset your password, simply ignore this email.\n\n"
+    + "Big Love! <3 ~Day";
+  };
 }
 
 if (Meteor.isClient) {
