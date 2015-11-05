@@ -1,5 +1,7 @@
 accounts-base@1.2.2
 accounts-password@1.1.4
+angular@1.0.4
+angular:angular@1.4.7
 autopublish@1.0.4
 autoupdate@1.2.4
 babel-compiler@5.8.24_1
