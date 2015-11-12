@@ -19,10 +19,13 @@ Consensual  = {
   },
   orderAscending: function (order_default) {
     var order_default = order_default || "ascending";
-    return (Settings.find({}).fetch()[0] !== undefined) ? Settings.find({}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+    return (Settings.find({_id: Meteor.userId()}).fetch()[0] !== undefined) ? Settings.find({_id: Meteor.userId()}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+  },
+  hideCompleted: function (task_display_default) {
+    var task_display_default = task_display_default || "hidden";
+    return (Settings.find({_id: Meteor.userId()}).fetch()[0] !== undefined) ? Settings.find({_id: Meteor.userId()}).fetch()[0].hide_completed : task_display_default === "hidden" ? true : false;
   },
   currentUser: function () {
-
     return Meteor.user() && Meteor.user().username || "";
   }
 };
@@ -58,11 +61,11 @@ if (Meteor.isClient) {
   
   Template.body.helpers({
     settings: function () {
-      return Settings.find({});
+      return Settings.find({_id: Meteor.userId()});
     },
     tasks: function () {
       
-      var hide_completed_toggle = Session.get("hideCompleted") ? {checked: {$ne: true}} : {};
+      var hide_completed_toggle = Consensual.hideCompleted() ? {checked: {$ne: true}} : {};
 
       // Eventually, this will be accessible only through an TS/admin interface...for now, merely obfuscated
       // Utilities.taskOrderRepair();
@@ -94,15 +97,6 @@ if (Meteor.isClient) {
           break;
       }
       return header;
-    },
-    hideCompleted: function () {
-      return Session.get("hideCompleted");
-    },
-    completeCount: function () {
-      return Tasks.find({checked: true}).count(); // We can't use 'checked: {$eq: true}' until Mongo 3.0 (currently on 2.6.7)
-    },
-    incompleteCount: function () {
-      return Tasks.find({checked: {$ne: true}}).count(); // Oddly, 'checked: false' doesn't seem to work
     }
   });
 
@@ -115,13 +109,11 @@ if (Meteor.isClient) {
       var text = event.target.text.value;
       var next = Tasks.find({}).count() + 1;
       // Insert a task into the collection
-      var user_id = Meteor.userId();
-      var user_name = Meteor.user().username;
       Tasks.insert({
         text: text,
-        createdAt: new Date(), // current time
-        owner: user_id,        // _id of logged in user
-        username: user_name,   // username of logged in user
+        createdAt: new Date(),              // current time
+        owner: Meteor.userId(),             // _id of logged in user
+        username: Meteor.user().username,   // username of logged in user
         order: next,
         checked: false,
         selected: false
@@ -129,9 +121,6 @@ if (Meteor.isClient) {
  
       // Clear form
       event.target.text.value = "";
-    },
-    "click .hide-completed input": function (event) {
-      Session.set("hideCompleted", event.target.checked);
     }
   });
 
@@ -176,11 +165,37 @@ if (Meteor.isClient) {
       Tasks.remove(this._id);
     }
   });
+   
+  Template.hide_completed_toggle.helpers({
+    hideCompleted: function () {
+      return Consensual.hideCompleted();
+    },
+    completeCount: function () {
+      return Tasks.find({checked: true}).count(); // We can't use 'checked: {$eq: true}' until Mongo 3.0 (currently on 2.6.7)
+    },
+    incompleteCount: function () {
+      return Tasks.find({checked: {$ne: true}}).count(); // Oddly, 'checked: false' doesn't seem to work
+    }
+  });
 
-  Template.setting.events({
-    "click .reorder-tasks": function () {
-      Settings.update(this._id, {
-        $set: {order_ascending: ! this.order_ascending}
+  Template.hide_completed_toggle.events({
+    "click .hide-completed input": function (event) {
+      Settings.update(Meteor.userId(), {
+        $set: {hide_completed: event.target.checked}
+      });
+    }
+  });
+
+  Template.task_order.helpers({
+    orderAscending: function () {
+      return Consensual.orderAscending()
+    }
+  });
+
+  Template.task_order.events({
+    "click .reorder-tasks": function (event) {
+      Settings.update(Meteor.userId(), {
+        $set: {order_ascending: ! Consensual.orderAscending()}
       });
     }
   });

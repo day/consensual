@@ -16,15 +16,11 @@
     <header>
         <div class="login_container"><span class="login">{{> loginButtons}}</span></div>
       <h1>{{header}}</h1>
-      <label class="hide-completed">
-        {{incompleteCount}} Tasks in Queue<br />Hide {{completeCount}} Completed <input type="checkbox" checked="{{hideCompleted}}" />
-      </label>
+      {{> hide_completed_toggle}}
       <form class="new-task">
         <input type="text" name="text" placeholder="{{#if currentUser}}What should we do next?{{else}}Sign in to get started!{{/if}}" />
       </form>
-      {{#each settings}}
-        {{> setting}}
-      {{/each}}
+      {{> task_order}}
     </header>
  
     <ul>
@@ -52,7 +48,13 @@
   </li>
 </template>
 
-<template name="setting">
-  <button class="reorder-tasks">{{#if order_ascending}}&DownArrow;{{else}}&UpArrow;{{/if}}</button>
+<template name="task_order">
+  <button class="reorder-tasks">{{#if orderAscending}}&DownArrow;{{else}}&UpArrow;{{/if}}</button>
+</template>
+
+<template name="hide_completed_toggle">
+  <label class="hide-completed">
+    {{incompleteCount}} Tasks in Queue<br />Hide {{completeCount}} Completed <input type="checkbox" checked="{{hideCompleted}}" />
+  </label>
 </template>
 
