@@ -70,7 +70,7 @@ if (Meteor.isClient) {
       // Eventually, this will be accessible only through an TS/admin interface...for now, merely obfuscated
       // Utilities.taskOrderRepair();
 
-      return Tasks.find(hide_completed_toggle, {sort: {order: Consensual.orderAscending() ? 1 : -1}});
+      return Tasks.find({owner: Meteor.userId()}, hide_completed_toggle, {sort: {order: Consensual.orderAscending() ? 1 : -1}});
 
     },
     domain: function () {
@@ -171,10 +171,10 @@ if (Meteor.isClient) {
       return Consensual.hideCompleted();
     },
     completeCount: function () {
-      return Tasks.find({checked: true}).count(); // We can't use 'checked: {$eq: true}' until Mongo 3.0 (currently on 2.6.7)
+      return Tasks.find({owner: Meteor.userId()}, {checked: true}).count(); // We can't use 'checked: {$eq: true}' until Mongo 3.0 (currently on 2.6.7)
     },
     incompleteCount: function () {
-      return Tasks.find({checked: {$ne: true}}).count(); // Oddly, 'checked: false' doesn't seem to work
+      return Tasks.find({owner: Meteor.userId()}, {checked: {$ne: true}}).count(); // Oddly, 'checked: false' doesn't seem to work
     }
   });
 
