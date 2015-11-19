@@ -17,13 +17,13 @@ Consensual  = {
     domain = domain.split(':')[0];
     return domain;
   },
-  orderAscending: function (order_default) {
-    var order_default = order_default || "ascending";
-    return (Settings.find({_id: Meteor.userId()}).fetch()[0] !== undefined) ? Settings.find({_id: Meteor.userId()}).fetch()[0].order_ascending : order_default === "ascending" ? true : false;
+  order_ascending_default: false,
+  orderAscending: function () {
+    return (Settings.find({_id: Meteor.userId()}).fetch()[0] !== undefined) ? Settings.find({_id: Meteor.userId()}).fetch()[0].order_ascending : Consensual.order_ascending_default;
   },
-  hideCompleted: function (task_display_default) {
-    var task_display_default = task_display_default || "hidden";
-    return (Settings.find({_id: Meteor.userId()}).fetch()[0] !== undefined) ? Settings.find({_id: Meteor.userId()}).fetch()[0].hide_completed : task_display_default === "hidden" ? true : false;
+  hide_completed_default: true,
+  hideCompleted: function () {
+    return (Settings.find({_id: Meteor.userId()}).fetch()[0] !== undefined) ? Settings.find({_id: Meteor.userId()}).fetch()[0].hide_completed : Consensual.hide_completed_default;
   },
   currentUser: function () {
     return Meteor.user() && Meteor.user().username || "";
@@ -49,6 +49,16 @@ if (Meteor.isServer) {
     + "If you do not wish to reset your password, simply ignore this email.\n\n"
     + "Big Love! <3 ~Day";
   };
+
+  Accounts.onCreateUser(function(options, user) {
+    // We store user-specific settings in another table keyed to the userId
+    Settings.insert({"_id": user._id, "order_ascending": Consensual.order_ascending_default, "hide_completed": Consensual.hide_completed_default, "createdAt": user.createdAt});
+    // We still want the default hook's 'profile' behavior.
+    if (options.profile)
+      user.profile = options.profile;
+    return user;
+  });
+
 }
 
 if (Meteor.isClient) {
